@@ -21,9 +21,11 @@ https://zjp-cn.github.io/os-notes/async-os-dev-log_rCore-N.html
 
 一些工具安装
 
+```
 cargo install cargo-binutils
 rustup component add llvm-tools-preview
 rustup component add rust-src
+```
 
 如果 install 失败则在后面添加 --locked 选项
 
