@@ -264,9 +264,23 @@ impl MemorySet {
     }
     ```
 
-    注意 PageTable::translate 中的这个 Option::map 函数，它接收一个``闭包``（函数）对 Option 内部的值进行转换，同时保持 Option 的上下文（即 Some 或 None 的状态）。
+    注意 PageTable::translate 中的这个 Option::map 函数，这是一个 rust 内置的函数，它接收一个``闭包``（函数）对 Option 内部的值进行转换，同时保持 Option 的上下文（即 Some 或 None 的状态）。
 
-    于是 translate 返回的 pte 是以拷贝形式返回，不涉及所有权转移，也无法通过修改返回的 pte 影响到原 pte 的值。
+    ```rust
+    #[inline]
+    #[stable(feature = "rust1", since = "1.0.0")]
+    pub fn map<U, F>(self, f: F) -> Option<U>
+    where
+        F: FnOnce(T) -> U,
+    {
+        match self {
+            Some(x) => Some(f(x)),
+            None => None,
+        }
+    }
+    ```
+
+    于是 translate 返回的 pte 是以 clone 形式返回，不涉及所有权转移，也无法通过修改返回的 pte 影响到原 pte 的值。
 
 - ``unmap_from_page_table``
 
