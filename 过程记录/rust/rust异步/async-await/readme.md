@@ -108,7 +108,7 @@ fn file_len() -> impl Future<Output = usize> {
 
 - 延迟计算
     - 它不会立即计算字符串长度，而是等待 ``inner_future`` 完成后再计算
-- 符合 rust 的[零成本抽象](../../函数式编程与零成本抽象.md)
+- 符合 rust 的[零成本抽象](../../functional-programming-and-zero-cost-abstractions.md)
     - 在编写高抽象的代码时，不会引入额外运行时开销，也就是说和低抽象代码（如 ``for`` 循环，``if`` 语句，原始指针）一样高效
 
 #### 缺点
