@@ -43,3 +43,31 @@ impl MyTrait<i32> for MyStruct {
 ## 作用
 
 简化代码，明确表示该类型与 trait 的实现相关，增加代码可读性
+
+## 泛型参数 vs 关联类型
+
+|场景|泛型参数|关联类型|
+|---|---|---|
+|类型由调用方决定|适合|不适合|
+|类型由实现方决定|导致冗余|适合（如 ``Iterator``）|
+|需要多套类型组合|适合（如 ``HashMap<K, V>``）|不适合|
+|类型关系固定|代码冗余|适合（如 ``Deref::Target``）|
+
+## 标准库中的关联类型
+
+经典案例：
+
+- ``Iterator`` trait
+    ```rust
+    trait Iterator {
+        type Item;
+        fn next(&mut self) -> Option<Self::Item>;
+    }
+    ```
+- ``Deref`` trait
+    ```rust
+    trait Deref {
+        type Target: ?Sized;
+        fn deref(&self) -> &Self::Target;
+    }
+    ```

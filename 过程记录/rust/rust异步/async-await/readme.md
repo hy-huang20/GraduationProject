@@ -108,7 +108,7 @@ fn file_len() -> impl Future<Output = usize> {
 
 - 延迟计算
     - 它不会立即计算字符串长度，而是等待 ``inner_future`` 完成后再计算
-- 符合 rust 的[零成本抽象](../../functional-programming-and-zero-cost-abstractions.md)
+- 符合 rust 的[零成本抽象](../../rust-zero-cost-abstractions.md)
     - 在编写高抽象的代码时，不会引入额外运行时开销，也就是说和低抽象代码（如 ``for`` 循环，``if`` 语句，原始指针）一样高效
 
 #### 缺点
@@ -125,13 +125,13 @@ fn example(min_len: usize) -> impl Future<Output = String> {
 }
 ```
 
-- ``Either`` 包装器 [参考](./either-wrapper.md)
+- ``Either`` 包装器 [参考](./rust-either-wrapper.md)
 - ``move`` 关键字的[作用](../../rust-move.md)
 - 上述代码中闭包参数 ``content`` 的类型已经是 ``String`` 而非 ``impl Future<Output = String>``
     - ``impl Future<Output = String>``
         - 含义是：实现了 ``Future`` trait 的某个具体类型，且该 
     - ``then`` 闭包参数是前一个 ``Future`` 的输出值（``Output`` 类型）
-- ``content + &s`` 中 ``&`` 的[原因](../../rust-add-string-and-string-slice.md)
+- ``content + &s`` 中 ``&`` 的[原因](../../rust-deref.md)
 
 ### The Async/Await Pattern
 
@@ -155,7 +155,79 @@ fn foo() -> impl Future<Output = u32> {
 
 #### Saving State
 
+rust 的 ``async/await`` 代码会被编译器编译成``状态机``代码。
 
+>为了能够从上一个等待状态继续，状态机必须在内部保持当前的状态。此外，它必须保存所有它需要在下一个 ``poll`` 调用中继续执行的变量。这就是编译器真正发挥作用的地方：因为它知道哪些变量何时使用，它可以自动生成具有确切所需变量的结构体。
+
+作为一个习惯了 cpp “要求什么得到什么” 的自由特性后的 cpp 开发者，初期接触时说实话不太习惯 rust 的这样的自动化魔法。~~初期感觉到自己在被 rust 编译器“管教”“不信任”~~
+
+### Pinning
+
+#### Self-Referential Structs 
+
+``自引用结构体``：结构体的某个字段引用了同一结构体的另一个字段的数据
+
+考虑文中的 ``WaitingOnWriteState`` 结构体。当移动结构体时，由于 array 的元素的类型实现了 ``Copy`` trait, 所以默认行为是进行拷贝，因此移动后的结构体的 array 的地址会发生改变，从而 element 失效。
+
+再考虑一个文中没有的例子：
+
+```rust
+struct SelfRef {
+    data: String,
+    self_ref: *const String, // 指向自己的指针
+}
+
+let sr = SelfRef {
+    data: "hello".to_string(),
+    self_ref: std::ptr::null(),
+};
+sr.self_ref = &sr.data; // 建立自引用
+
+// 移动会导致self_ref成为悬垂指针！
+let moved_sr = sr; // 危险！
+```
+
+*可选：回忆一下[String 内存结构](../../rust-string-memory-structure.md)*
+
+``self_ref`` 记录了 data *栈*上元数据的地址。而移动 ``sr`` 时，这一部分元数据会被逐字节拷贝，也就是说元数据会被复制到栈上的另外一块内存处，而 ``self_ref`` 作为一个``裸指针``（或原始指针，raw pointer）由于也实现了 ``Copy`` trait，因此也会被原样拷贝，因此移动后 ``self_ref`` 仍然记录的是旧的元数据的地址。
+
+#### Possible Solutions
+
+rust **禁止移动自引用结构体**，因为它的原则是提供``零成本抽象``，这意味着抽象不应该带来额外的运行时成本。
+
+#### Heap Values
+
+文中使用堆分配创建的自引用结构体：
+
+```rust
+fn main() {
+    let mut heap_value = Box::new(SelfReferential {
+        self_ptr: 0 as *const _,
+    });
+    let ptr = &*heap_value as *const SelfReferential;
+    heap_value.self_ptr = ptr;
+    println!("heap value at: {:p}", heap_value);
+    println!("internal reference: {:p}", heap_value.self_ptr);
+}
+
+struct SelfReferential {
+    self_ptr: *const Self,
+}
+```
+
+- 注意：Rust 不用像 C++ 一样先声明后定义，因此可能会遇到 ``main`` 函数作为文件中第一个函数的情况
+    - **无需前置声明**
+    - **任意顺序**：函数之间调用不依赖定义顺序，编译器会全局分析代码
+    - ``main`` **函数位置**：可以放在文件的任何位置（开头、中间或末尾）
+- 使用解引用运算符访问 ``Box<T>``
+    - ``Box<T>`` 实现了 [``Deref``](../../rust-deref.md) trait
+    - 流程
+        - 调用 ``.deref()`` 返回 ``T`` 的引用 ``&T``
+        - 然后通过普通解引用运算符解引用 ``&T``，最终访问 ``T`` 的值
+- 使用 ``&*`` 访问 ``Box<T>``（常见）
+    - 如果只有解引用运算符 ``*``，则如果 ``T`` 没有实现 ``Copy`` trait，那么会发生所有权的转移，数据被移动，原数据失效
+    - ``&*`` 不会消耗 ``Box<T>`` 的所有权，只是借用其内部数据
+    - 其实，完全可以直接显式调用一次 ``.deref()``，这和 ``&*`` 是完全等效的
 
 ## Implementation 实现
 
