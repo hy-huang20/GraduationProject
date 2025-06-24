@@ -229,6 +229,90 @@ struct SelfReferential {
     - ``&*`` 不会消耗 ``Box<T>`` 的所有权，只是借用其内部数据
     - 其实，完全可以直接显式调用一次 ``.deref()``，这和 ``&*`` 是完全等效的
 
+所以上述代码中，``ptr`` 指向的是位于堆上的 ``SelfReferential``，从而 ``heap_value.self_ptr`` 指向的是 ``ptr`` 指向的数据，从而实现了自引用结构体，这里的结构体 ``SelfReferential`` 中的指针 ``self_ptr`` 指向结构体 ``SelfReferential`` 自身。
+
+但是，这里的 ``Box<T>`` 是在栈上的结构体，只是内部指针指向堆上数据，于是 ``heap_value`` 是栈上的那部分数据（类型为 ``Box<SelfReferential>``），其地址也应该是栈上那部分数据的地址才对啊？为什么直接输出 ``heap_value`` 会输出堆上数据的地址呢？这是因为 ``Box<T>`` 实现了 ``Pointer`` trait：
+
+*[关于 Pointer trait](https://doc.rust-lang.org/std/fmt/trait.Pointer.html)*
+
+```rust
+pub trait Pointer {
+    // Required method
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error>;
+}
+```
+
+``Pointer`` trait 定义了当使用 ``{:p}`` 格式化时如何输出 ``Box`` 的指针值。
+
+*[关于 ``Box`` 实现 ``Pointer`` trait](https://doc.rust-lang.org/src/alloc/boxed.rs.html#1930)*
+
+```rust
+#[stable(feature = "rust1", since = "1.0.0")]
+impl<T: ?Sized, A: Allocator> fmt::Pointer for Box<T, A> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        // It's not possible to extract the inner Uniq directly from the Box,
+        // instead we cast it to a *const which aliases the Unique
+        let ptr: *const T = &**self;
+        fmt::Pointer::fmt(&ptr, f)
+    }
+}
+```
+
+一般如果 ``self`` 是 ``Box<T>`` 时，可能会看到 ``&**self`` 这样的形式。
+
+- 第一次解引用 ``*self``
+    - ``Box<T>`` 实现了 ``Deref`` trait，所以 ``*self`` 相当于 ``*(self.deref())``
+    - 这会得到 ``Box`` 内部拥有的 ``T`` 类型的值（所有权转移）
+- 第二次解引用 ``**self``
+    - 如果 ``T`` 本身也是可以解引用的类型（比如 ``T`` 是 ``String``，``Vec`` 等实现了 ``Deref`` 的类型）
+    - 则会继续调用 ``T`` 的 ``deref()`` 方法
+    - 对于像 ``i32`` 这样的简单类型，第二次解引用无实际效果
+- 最后取引用 ``&**self``
+    - 对最终解引用得到的值取引用
+
+|原类型|第一次解引用|第二次解引用|最后取引用|
+|---|---|---|---|
+|``Box<String>``|``String``|``str``|``&str``|
+|``Box<i32>``|``i32``|``i32``|``&i32``|
+
+这样设计便可让 ``Box`` 作为智能指针，在这一点上表现得像普通指针。想想看，如果 ``heap_value`` 是个普通裸指针，并指向堆上的一块数据，那么直接输出 ``heap_value`` 的结果，是不是就是堆上数据的地址了？
+
+#### ``Pin<Box<T>>`` and ``Unpin``
+
+> ``Unpin`` trait 是一个 ``auto trait``，Rust 自动为所有类型实现了它，除了那些明确地选择了不实现的类型。通过使自引用结构体选择不实现 ``Unpin`` 的类型，对于它们来说，要从 ``Pin<Box<T>>`` 类型获得 ``&mut T`` 是没有（**安全的**）办法的。
+
+那么如何选择不实现 ``Unpin`` trait 呢？只需要在结构体**定义**和**初始化**的时候在结构体内添上这么一句，便可使类型成为 ``!Unpin``：
+
+```rust
+_pin: PhantomPinned,
+```
+
+另外，注意上面“**安全的**”表述，也就是这种情况下仍然有办法获取到 ``&mut T``。比如可以在 ``unsafe`` 块中使用 [get_unchecked_mut](https://doc.rust-lang.org/nightly/core/pin/struct.Pin.html#method.get_unchecked_mut) 函数。但是使用这个函数的开发者需要保证：
+
+- **不移动数据**：返回的 ``&mut T`` 不能用于移动 T（如文中提到的 ``mem::replace`` 或 ``mem::swap``）
+- **不使 pin 失效**：不能通过这个引用做任何会导致 pin 保证被破坏的操作
+- **生命周期有效**：返回的引用不能超过原始 ``Pin`` 的生命周期
+
+#### Stack Pinning and ``Pin<&mut T>``
+
+#### Pinning and Futures
+
+### Executors and Wakers
+
+#### Executors
+
+>负责轮询所有 ``future`` 直到它们完成。
+
+#### Wakers
+
+由 ``Executor`` 创建的 ``Waker`` 类型被包装在 ``Context`` 类型中被传给每个 ``poll`` 方法，当 ``future`` 异步任务完成时，``Waker`` 会通知 ``Executor`` 调用该 ``future`` 的 ``poll``。
+
+### Cooperative Multitasking?
+
+不同于显式地使用 ``yield`` 操作，``futures`` 通过返回 ``Poll::Pending`` 来放弃 CPU 控制（或者在结束时返回 ``Poll::Ready``）
+
+- 没有任何东西强制 ``futures`` 放弃 CPU 控制。如果它们想要，它们可以永远不从 ``poll`` 返回。例如，通过在循环中无休止地旋转
+- 由于每个 ``future`` 都可以阻塞执行器中的其它 ``future`` 的执行，我们需要相信它们不是恶意的
+
 ## Implementation 实现
 
-TODO
