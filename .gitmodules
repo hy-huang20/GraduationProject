@@ -1,3 +1,4 @@
 [submodule "过程记录/rust/rust-learning"]
 	path = 过程记录/rust/rust-learning
 	url = git@github.com:hy-huang20/rust-learning.git
+	branch = main
