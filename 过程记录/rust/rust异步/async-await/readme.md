@@ -52,7 +52,7 @@ pub enum Poll<T> {
 
 当 ``Self::Output`` 已经可用时，它被包装在 ``Ready`` 中返回。否则返回 ``Pending`` 以告诉调用者该值尚不可用。
 
-### Future 组合器
+### Future Combinators
 
 #### string_len 组合器
 
@@ -125,7 +125,7 @@ fn example(min_len: usize) -> impl Future<Output = String> {
 }
 ```
 
-- ``Either`` 包装器 [参考](./rust-either-wrapper.md)
+- ``Either`` 包装器 [参考](../rust-either-wrapper.md)
 - ``move`` 关键字的[作用](../../rust-move.md)
 - 上述代码中闭包参数 ``content`` 的类型已经是 ``String`` 而非 ``impl Future<Output = String>``
     - ``impl Future<Output = String>``
@@ -314,5 +314,6 @@ _pin: PhantomPinned,
 - 没有任何东西强制 ``futures`` 放弃 CPU 控制。如果它们想要，它们可以永远不从 ``poll`` 返回。例如，通过在循环中无休止地旋转
 - 由于每个 ``future`` 都可以阻塞执行器中的其它 ``future`` 的执行，我们需要相信它们不是恶意的
 
-## Implementation 实现
+## Implementation
 
+参考文档实现的[带 Waker 的简单 Executor](https://github.com/hy-huang20/rust-learning/tree/async-await/async-await)

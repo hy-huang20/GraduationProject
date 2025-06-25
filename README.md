@@ -2,6 +2,19 @@
 
 总体的计划安排 [实时更新中](#20250611)
 
+## 20250625
+
+### 进度
+
+- 完成 Write an OS in Rust/async-await 的阅读 [总结](https://github.com/hy-huang20/rust-os-learning/blob/main/%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/rust/rust%E5%BC%82%E6%AD%A5/async-await/readme.md)
+- 代码
+    - 参照上述文档实现了一个[不带 Waker 的 Executor](https://github.com/hy-huang20/rust-learning/commit/9a56e8c0d5e5e0022983daca3dd3390a859076a4)
+    - 基于一个[已有的异步爬虫](https://gitee.com/taoqi-cat/asyn/tree/master/spider)进行了简单改进
+
+### 后续
+
+- 学习 [embassy](https://github.com/embassy-rs/embassy/tree/main/embassy-executor)
+
 ## 20250618
 
 ### 进度
