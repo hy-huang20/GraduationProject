@@ -2,6 +2,44 @@
 
 总体的计划安排 [实时更新中](#20250611)
 
+## 20250709
+
+### 进度
+
+- 进行中：看 embassy 源码 [过程记录](https://github.com/hy-huang20/rust-os-learning/tree/main/%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/rust/rust%E5%BC%82%E6%AD%A5/Embassy)
+    - 目前涉及到的 package:
+        - embassy-time
+        - embassy-time-driver
+        - embassy_time_queue_utils
+        - embassy-executor
+        - embassy-executor-macros
+
+### 后续
+
+- 把 embassy-executor 执行过程理清楚，并完成源码阅读过程记录
+
+## 20250701
+
+### 进度
+
+- 看 [Embassy Book](https://embassy.dev/book/)，[过程记录](https://github.com/hy-huang20/rust-os-learning/blob/main/%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/rust/rust%E5%BC%82%E6%AD%A5/Embassy/readme.md)
+    - Introduction 节
+    - System Description 节
+        - Embassy Executor 节
+        - Time-keeping 节
+- 跑通了 Embassy Book 中的 [2 个 example](https://github.com/hy-huang20/rust-learning/commit/955c5bb61689788dcc2a45fe7d03b5bd940f7ea7)
+- 问题：林晨纪要 0416 中几个链接似乎失效了
+    - [baremental 仓库](https://github.com/zflcs/baremental/)失效
+    - [仍然有效的链接](https://github.com/ATS-INTC/ats-intc/blob/30e4ea6a47de5ca8ec757764d544f3c8e58d9e14/src/waker.rs?accessToken=eyJhbGciOiJIUzI1NiIsImtpZCI6ImRlZmF1bHQiLCJ0eXAiOiJKV1QifQ.eyJleHAiOjE3NTEzMzEwNDgsImZpbGVHVUlEIjoiWEtxNDI1eGIxbnQ0V3pBTiIsImlhdCI6MTc1MTMzMDc0OCwiaXNzIjoidXBsb2FkZXJfYWNjZXNzX3Jlc291cmNlIiwicGFhIjoiYWxsOmFsbDoiLCJ1c2VySWQiOjMwNTEwODA2fQ.lwgSV9-tymBeP2w-owXr-mwaahMgADLQSUjYye6lQqA)
+    - 解决：可以看[其它例子](https://github.com/ATS-INTC/ats-intc/blob/30e4ea6a47de5ca8ec757764d544f3c8e58d9e14/src/lib.rs)
+
+### 后续
+
+- 看 Timer 源码
+- 异步串口例子（还可以参考[训练营的代码：2，5](https://shimo.im/docs/KlkKvREgExUZM2qd)）在 qemu 中跑起来
+- 继续看 Embassy Book
+- 学习[在 rCore 中引入异步运行时](https://github.com/lighkLife/new-blog/issues/1?accessToken=eyJhbGciOiJIUzI1NiIsImtpZCI6ImRlZmF1bHQiLCJ0eXAiOiJKV1QifQ.eyJleHAiOjE3NTEzMzEwNDgsImZpbGVHVUlEIjoiWEtxNDI1eGIxbnQ0V3pBTiIsImlhdCI6MTc1MTMzMDc0OCwiaXNzIjoidXBsb2FkZXJfYWNjZXNzX3Jlc291cmNlIiwicGFhIjoiYWxsOmFsbDoiLCJ1c2VySWQiOjMwNTEwODA2fQ.lwgSV9-tymBeP2w-owXr-mwaahMgADLQSUjYye6lQqA)
+
 ## 20250625
 
 ### 进度
