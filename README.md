@@ -17,6 +17,9 @@
 ### 后续
 
 - 把 embassy-executor 执行过程理清楚，并完成源码阅读过程记录
+    - embassy-time
+    - embassy-executor
+- 参考一下训练营中的 embassy 记录
 
 ## 20250701
 
