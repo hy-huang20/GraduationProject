@@ -40,23 +40,46 @@ graph TD
 
 ## 函数调用栈
 
+### Executor::spawn()
+
 ```mermaid
 sequenceDiagram
-    participant Main
-    participant FuncA
-    participant FuncB
-    participant FuncC
+    participant Executor
+    participant SyncExecutor
+    participant RunQueue
+    participant Pender
+    participant state_atomics_arm
 
-    Main->>FuncA: 调用 FuncA
-    activate FuncA  # 压栈（模拟）
-    FuncA->>FuncB: 调用 FuncB
-    activate FuncB
-    FuncB->>FuncC: 调用 FuncC
-    activate FuncC
-    FuncC-->>FuncB: 返回
-    deactivate FuncC # 弹栈（模拟）
-    FuncB-->>FuncA: 返回
-    deactivate FuncB
-    FuncA-->>Main: 返回
-    deactivate FuncA
+    activate Executor
+        Executor->>SyncExecutor: SyncExecutor::spawn()
+        activate SyncExecutor
+            SyncExecutor->>state_atomics_arm: state::locked()
+            activate state_atomics_arm
+                state_atomics_arm->>state_atomics_arm: 创建一个 Token
+                state_atomics_arm->>SyncExecutor: 将 Token 传给闭包并执行闭包
+                activate SyncExecutor
+                    activate SyncExecutor
+                        SyncExecutor->>SyncExecutor: enqueue()
+                        SyncExecutor->>RunQueue: RunQueue::enqueue()
+                        activate RunQueue
+                            RunQueue->>RunQueue: 新 task 插入链表 head
+                            RunQueue-->>SyncExecutor: 返回
+                        deactivate RunQueue
+                        SyncExecutor->>Pender: Pender::pend()
+                        activate Pender
+                            Pender->>Pender: extern "Rust" unsafe fn __pender()
+                            Pender-->>SyncExecutor: 返回
+                        deactivate Pender
+                    deactivate SyncExecutor
+                    SyncExecutor-->>state_atomics_arm: 闭包执行完成返回
+                deactivate SyncExecutor
+                state_atomics_arm-->>SyncExecutor: 返回闭包的返回值
+            deactivate state_atomics_arm
+            SyncExecutor-->>Executor: 返回
+        deactivate SyncExecutor
+    deactivate Executor
 ```
+
+#### 关于 __pender()
+
+TODO
