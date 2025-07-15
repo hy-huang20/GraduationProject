@@ -134,6 +134,47 @@ impl<F: Future + 'static> AvailableTask<F> {
 
 ``task.raw.state.spawn()`` 的功能主要是将 ``task.raw.state`` 的 ``spawned`` ``run_queued`` 属性均设置为 true 以**完成状态转移**，并返回是否成功的 bool 值。而 then 如果前面返回的为 true 则执行闭包，即返回状态转移后的 task。
 
+``State::spawn()``：
+
+```rust
+impl State {
+    /// If task is idle, mark it as spawned + run_queued and return true.
+    #[inline(always)]
+    pub fn spawn(&self) -> bool {
+        compiler_fence(Ordering::Release);
+        let r = self
+            .as_u32()
+            .compare_exchange(
+                0,
+                STATE_SPAWNED | STATE_RUN_QUEUED,
+                Ordering::Relaxed,
+                Ordering::Relaxed,
+            )
+            .is_ok();
+        compiler_fence(Ordering::Acquire);
+        r
+    }
+}
+```
+
+>#### 关于 compare_exchange
+>
+>```rust
+>pub fn compare_exchange(
+>    &self,
+>    current: usize,      // 预期当前值
+>    new: usize,          // 新值
+>    success: Ordering,   // 成功时的内存顺序
+>    failure: Ordering    // 失败时的内存顺序
+>) -> Result<usize, usize>
+>```
+>
+>|返回值|说明|
+>|---|---|
+>|``Ok(old_value)``|操作成功，``old_value`` 是修改前的值（等于 ``current``）|
+>|``Err(current_value)``|操作失败，``current_value`` 是实际当前值（不等于 ``current``）|
+
+
 ### Executor::spawn()
 
 ```mermaid
@@ -225,9 +266,9 @@ sequenceDiagram
 
 #### 关于 poll_fn
 
-目前暂时不知道 poll_fn 作为一个函数指针是干什么用的
+目前暂时不太明确 poll_fn 作为一个函数指针的职能。
 
-TODO
+不过可以参考[已有的记录](./run_queue_atomics.md#关于-taskheaderpoll_fn-属性)。
 
 ## 3: Task wakes itself, waker wakes task, or task exits
 
@@ -253,7 +294,7 @@ sequenceDiagram
                     activate mod
                         mod->>SyncExecutor: SyncExecutor::enqueue()
                         activate SyncExecutor
-                            note over SyncExecutor: 这之后的逻辑和之前的时序图存在重复
+                            note over SyncExecutor: 见之前时序图，向 RunQueue 链表首插入 task
                             SyncExecutor-->>mod: 返回
                         deactivate SyncExecutor
                         mod-->>state_atomics_arm: 闭包执行完成
@@ -285,6 +326,7 @@ sequenceDiagram
         TaskStorage->>TaskStorage: TaskStorage::poll()
         activate TaskStorage
             TaskStorage->>TaskStorage: Future::poll()
+            note over TaskStorage: Poll::Ready
             TaskStorage->>UninitCell: UninitCell::drop_in_place()
             activate UninitCell
                 note over UninitCell: 析构
