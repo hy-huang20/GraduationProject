@@ -43,6 +43,7 @@ embassy 学习[过程记录](https://github.com/hy-huang20/rust-os-learning/tree
         - ``Pender`` 类型
             - ``Pender`` 的作用
             - 关于 ``unsafe extern "Rust" fn __pender()``
+        - ``Token`` 类型
 - 继续跑一些 Embassy Book 中的例子
     - 之前已经跑通 Embassy Book 中可以在 PC 上运行的例子
     - TODO：有些例子可能需要在 QEMU 中运行
