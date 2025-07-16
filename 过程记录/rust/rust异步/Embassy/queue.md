@@ -108,9 +108,7 @@ impl Queue {
 
 ### schedule_wake()
 
-embassy-executor 有一个 run queue 和一个 timer queue，前者管理**立即可运行**的任务，后者存放**在特定时间点需要被唤醒**的任务。在 timer queue 中被唤醒的任务会被移入 run queue 中。
-
-TODO：弄清楚 timer queue 任务转入 run queue 的调用时序
+embassy-executor 有一个 run queue 和一个 timer queue，前者管理**立即可运行**的任务，后者存放**在特定时间点需要被唤醒**的任务。在 timer queue 中被唤醒的任务会被移入 run queue 中。timer queue 任务转入 run queue 其实是通过 ``Queue::next_expiration()`` 中的 ``embassy_executor::raw::wake_task()`` 实现的。
 
 这里讨论 timer queue。timer queue 和 run queue 一样也是一个单链表。timer queue 中每个节点的 next 指向链表中的下一个节点，最后一个节点的值为 ``Some(dangling_pointer)``：
 
