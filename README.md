@@ -40,6 +40,9 @@ embassy 学习[过程记录](https://github.com/hy-huang20/rust-os-learning/tree
         - time driver [源码分析](https://github.com/hy-huang20/rust-os-learning/blob/main/%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/rust/rust%E5%BC%82%E6%AD%A5/Embassy/time-driver.md)
             - TODO: std, wasm
             - 在 PC 上运行的例子使用了 mock, std, wasm 中的哪个 time driver？
+        - ``Pender`` 类型
+            - ``Pender`` 的作用
+            - 关于 ``unsafe extern "Rust" fn __pender()``
 - 继续跑一些 Embassy Book 中的例子
     - 之前已经跑通 Embassy Book 中可以在 PC 上运行的例子
     - TODO：有些例子可能需要在 QEMU 中运行
