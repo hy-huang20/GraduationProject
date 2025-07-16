@@ -8,13 +8,42 @@
 
 embassy 学习[过程记录](https://github.com/hy-huang20/rust-os-learning/tree/main/%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/rust/rust%E5%BC%82%E6%AD%A5/Embassy)
 
+已完成部分：（embassy-executor）
+
+- src/raw/mod.rs [源码分析](https://github.com/hy-huang20/rust-os-learning/blob/main/%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/rust/rust%E5%BC%82%E6%AD%A5/Embassy/executor/raw/mod.md)（根据其中的注释）
+    - task 生命周期 4 个状态（对应 src/raw/state_atomics_arm.rs 中 ``State`` 不同属性值），6 个状态转移过程
+- src/raw/run_queue_atomics.rs：从 RunQueue 开始的[源码分析](https://github.com/hy-huang20/rust-os-learning/blob/main/%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/rust/rust%E5%BC%82%E6%AD%A5/Embassy/executor/raw/run_queue_atomics.md)
+    - 关于函数指针 ``poll_fn``：什么时候被赋值，什么时候被调用，调用的时候是什么样的值
+- time queue 和 run queue：[源码分析](https://github.com/hy-huang20/rust-os-learning/blob/main/%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/rust/rust%E5%BC%82%E6%AD%A5/Embassy/queue.md)
+    - 各自的功能
+    - 两者之间的关系
+- 对一个简单[例子](https://github.com/hy-huang20/rust-learning/blob/embassy-learning/embassy-learning/src/main.rs)分析了较为完整的调用过程
+    - sequence diagram 见[记录](https://github.com/hy-huang20/rust-os-learning/blob/main/%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/rust/rust%E5%BC%82%E6%AD%A5/Embassy/executor/readme.md)
+- src/raw/utils.rs [源码分析](https://github.com/hy-huang20/rust-os-learning/blob/main/%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/rust/rust%E5%BC%82%E6%AD%A5/Embassy/executor/raw/utils.md)
+    - 这个不是很重要，主要是基于 core 提供的底层类型实现了简单的包装类型
+
 ### 后续
 
 - **改进意见**：需要验证过程记录内容的正确性
     - 关于测试：写一些简单的使用例，然后进行断点调试，追踪函数调用栈？（方案待确认）
-        - 尝试在 vscode 中进行断点调试
+        - 尝试：在 vscode 中进行断点调试
 - 目前还没有把调用逻辑整个地串起来
-    - 完成 embassy 过程记录
+    - 完成 embassy [过程记录]((https://github.com/hy-huang20/rust-os-learning/tree/main/%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/rust/rust%E5%BC%82%E6%AD%A5/Embassy))
+        - ``#[task]``, ``#[main]`` 在编译时是如何被转化的？转化成什么样的代码？
+            - 和 embassy-executor-macros package 的关系?
+        - "task wakes itself"（见 src/raw/mod.rs）的原理
+            - 在 embassy-executor 中没有地方调用 src/raw/waker.rs 中的 ``wake()`` 函数。调用方?
+        - 完善 [timer.md](https://github.com/hy-huang20/rust-os-learning/blob/main/%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/rust/rust%E5%BC%82%E6%AD%A5/Embassy/timer.md) 
+            - ``Timer::poll()`` 中的执行逻辑不清
+        - 完善[从 RunQueue 开始的源码分析](https://github.com/hy-huang20/rust-os-learning/blob/main/%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/rust/rust%E5%BC%82%E6%AD%A5/Embassy/executor/raw/run_queue_atomics.md)
+            ``SyncExecutor::poll`` 的调用方？ 
+        - time driver [源码分析](https://github.com/hy-huang20/rust-os-learning/blob/main/%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/rust/rust%E5%BC%82%E6%AD%A5/Embassy/time-driver.md)
+            - TODO: std, wasm
+            - 在 PC 上运行的例子使用了 mock, std, wasm 中的哪个 time driver？
+- 继续跑一些 Embassy Book 中的例子
+    - 之前已经跑通 Embassy Book 中可以在 PC 上运行的例子
+    - TODO：有些例子可能需要在 QEMU 中运行
+    - 有些内容似乎和目前关系不大
 
 ## 20250709
 
