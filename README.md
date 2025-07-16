@@ -2,6 +2,19 @@
 
 总体的计划安排 [实时更新中](#20250611)
 
+## 20250716
+
+### 进度
+
+embassy 学习[过程记录](https://github.com/hy-huang20/rust-os-learning/tree/main/%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/rust/rust%E5%BC%82%E6%AD%A5/Embassy)
+
+### 后续
+
+- **改进意见**：需要验证过程记录内容的正确性
+    - 写相应的测试程序
+- 目前还没有把调用逻辑整个地串起来
+    - 完成 embassy 过程记录
+
 ## 20250709
 
 ### 进度
