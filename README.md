@@ -22,6 +22,13 @@
 - 整理一下已有的 Embassy 记录
 - 看 rCore-N
 
+### 学期总结
+
+- 学习 Rust
+- 写 rCore
+- 学习 Write an OS in Rust 文档
+- 学习 Embassy 源码
+
 ## 20250716
 
 ### 进度
