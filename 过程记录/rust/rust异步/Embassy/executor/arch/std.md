@@ -119,6 +119,7 @@ sequenceDiagram
                     deactivate Spawner
                     Spawner-->>expanded main: 返回
                 deactivate Spawner
+                expanded main-->>arch/Executor: 闭包返回
             deactivate expanded main
             arch/Executor->>raw/Executor: raw::Executor::poll()
             activate raw/Executor
