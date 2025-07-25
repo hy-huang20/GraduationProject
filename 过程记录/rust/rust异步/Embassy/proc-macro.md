@@ -62,10 +62,6 @@ mod thread {
 
 这里实现了 ``__pender()``，和[embassy-executor 中关于 mod.rs 源码的分析](https://github.com/hy-huang20/rust-os-learning/blob/main/%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/rust/rust%E5%BC%82%E6%AD%A5/Embassy/executor/raw/mod.md#%E5%85%B3%E4%BA%8E-__pender)相对应。
 
-TODO: __pender() 的作用
-
-TODO: 现在还不知道例子中的代码会在编译期转换成什么样子，因此无法继续分析
-
 ## 编译期代码转换
 
 主要工作由 ``embassy-executor-macros`` 中的相关代码完成。顺着之前的思路找到 ``main_std`` 函数：
@@ -100,4 +96,4 @@ TODO
 
 [一个简单的属性宏使用例](https://github.com/hy-huang20/rust-learning/tree/attribute-macros/attribute-macros)
 
-使用 cargo-expand 工具自动展开宏。[例子](https://github.com/hy-huang20/rust-learning/blob/embassy-learning/embassy-learning/src/main.rs)中的代码会被转换成[这样](https://github.com/hy-huang20/rust-learning/blob/main/embassy-learning/src/expand.rs)。
+可以通过对上述源码进行分析得出展开后的代码，不过这里直接使用 cargo-expand 工具自动展开宏。[例子](https://github.com/hy-huang20/rust-learning/blob/embassy-learning/embassy-learning/src/main.rs)中的代码会被转换成[这样](https://github.com/hy-huang20/rust-learning/blob/main/embassy-learning/src/expand.rs)。
