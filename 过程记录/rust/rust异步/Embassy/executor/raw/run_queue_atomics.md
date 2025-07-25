@@ -350,6 +350,4 @@ impl<F: Future + 'static> TaskStorage<F> {
 
 #### 继续
 
-弄清楚 ``poll_fn`` 后，继续研究 ``SyncExecutor::poll`` 的调用方。
-
-TODO
+弄清楚 ``poll_fn`` 后，需要知道 ``SyncExecutor::poll`` 的调用方。根据[对 arch/std.rs 的分析](https://github.com/hy-huang20/rust-os-learning/blob/main/%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/rust/rust%E5%BC%82%E6%AD%A5/Embassy/executor/arch/std.md)可知其上一级调用者为 arch/std.rs 中的 ``Executor::run()``。
