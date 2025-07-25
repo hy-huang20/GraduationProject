@@ -2,6 +2,25 @@
 
 总体的计划安排 [实时更新中](#20250611)
 
+## 20250725
+
+### 进度
+
+- 属性宏的转化 [记录](https://github.com/hy-huang20/rust-os-learning/blob/main/%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/rust/rust%E5%BC%82%E6%AD%A5/Embassy/proc-macro.md)
+    - ``#[task]``, ``#[main]``
+- time driver [源码分析](https://github.com/hy-huang20/rust-os-learning/blob/main/%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/rust/rust%E5%BC%82%E6%AD%A5/Embassy/time-driver.md)
+    - ``driver_std``
+- embassy-executor/src/arch/std.rs [源码分析](https://github.com/hy-huang20/rust-os-learning/blob/main/%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/rust/rust%E5%BC%82%E6%AD%A5/Embassy/executor/arch/std.md)
+    - ``Pender`` 类型；作用
+- 验证正确性：cargo test
+    - 测试代码
+        - [embassy-learning](https://github.com/hy-huang20/rust-learning/tree/embassy-learning/embassy-learning/tests)
+        - [attribute-macros](https://github.com/hy-huang20/rust-learning/tree/attribute-macros/attribute-macros/tests)
+
+### 后续
+
+TODO
+
 ## 20250716
 
 ### 进度
