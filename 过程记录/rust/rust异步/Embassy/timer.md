@@ -131,4 +131,4 @@ mod driver_wasm;
 
 关于 ``driver_mock``, ``driver_std``, ``driver_wasm`` 这三种 time driver 的介绍可以参考[这里](./time-driver.md)。
 
-暂时没弄清这里使用的是哪个 driver。
+例子是在 wsl 中运行的，使用的是 ``driver_std``。[验证](https://github.com/hy-huang20/rust-learning/blob/embassy-learning/embassy-learning/tests/use_driver_std.rs)
