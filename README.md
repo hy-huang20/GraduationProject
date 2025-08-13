@@ -7,9 +7,13 @@
 ### 进度
 
 - 细化[秋季学期计划](#秋季学期计划)的时间安排
-- 参考[日志撰写要求](https://github.com/orgs/arceos-hypervisor/discussions/197)
-    - 在 Github 上创建 [project](https://github.com/users/hy-huang20/projects/3)
-    - 测试 project 和多仓库 issue 的关联
+- 参考[日志撰写要求](https://github.com/orgs/arceos-hypervisor/discussions/197)写开发日志
+    - 短期计划：Github Issues
+    - 阶段任务：Github Milestones
+    - 长期计划：Github Discussions/Announcements
+    - 学习记录：Github Discussions/General
+    - 正式文档：markdown 文件直接上传到相关仓库
+    - 代码文件：直接上传到相关仓库
 
 ### 秋季学期计划
 
@@ -28,13 +32,6 @@
 
 ### 后续
 
-- 之后需要参考[日志撰写要求](https://github.com/orgs/arceos-hypervisor/discussions/197)写开发日志
-    - 短期计划：Github Issues
-    - 阶段任务：Github Milestones
-    - 长期计划：Github Discussions/Announcements
-    - 学习记录：Github Discussions/General
-    - 正式文档：markdown 文件直接上传到相关仓库
-    - 代码文件：直接上传到相关仓库
 - 看 rCore-N
 - 跑林晨的 qemu
 
