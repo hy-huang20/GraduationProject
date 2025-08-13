@@ -35,9 +35,8 @@
     - 学习记录：Github Discussions/General
     - 正式文档：markdown 文件直接上传到相关仓库
     - 代码文件：直接上传到相关仓库
-- 参考 zfl 学长提供的 Embassy 记录并整理自己的 Embassy 记录
 - 看 rCore-N
-    - 跑林晨的 qemu
+- 跑林晨的 qemu
 
 ## 20250725
 
