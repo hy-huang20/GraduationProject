@@ -28,10 +28,16 @@
 
 ### 后续
 
+- 之后需要参考[日志撰写要求](https://github.com/orgs/arceos-hypervisor/discussions/197)写开发日志
+    - 短期计划：Github Issues
+    - 阶段任务：Github Milestones
+    - 长期计划：Github Discussions/Announcements
+    - 学习记录：Github Discussions/General
+    - 正式文档：markdown 文件直接上传到相关仓库
+    - 代码文件：直接上传到相关仓库
 - 参考 zfl 学长提供的 Embassy 记录并整理自己的 Embassy 记录
 - 看 rCore-N
     - 跑林晨的 qemu
-- 之后需要参考[日志撰写要求](https://github.com/orgs/arceos-hypervisor/discussions/197)写开发日志
 
 ## 20250725
 
