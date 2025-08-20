@@ -2,6 +2,23 @@
 
 总体的计划安排 [实时更新中](#20250611)
 
+## 20250820
+
+### 进度
+
+- 熟悉一些基本概念 
+    - 参考 lc [记录](https://github.com/BITcyman/Rust-os-learning/blob/main/driver/uart-crate.md#%E4%B8%80%E4%BA%9B%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5)
+    - 串口，uart，svd，pac
+- 学习用户态中断 [我的记录](https://github.com/hy-huang20/rust-os-learning/blob/main/%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/rCore-N/user-interrupt.md)
+    - 看 [Risc-V Extension N Implementation](https://gallium70.github.io/rv-n-ext-impl/intro.html)
+
+### 下周
+
+- 看完 Risc-V Extension N Implementation
+    - 整理报告
+- 继续学习 rCore-N
+- 跑 lc 的 qemu
+
 ## 20250811-20250813
 
 ### 进度
@@ -29,10 +46,12 @@
 - 11 月初完成毕设主要工作
     - 至少将林晨的异步串口工作推进至完成
     - 去年毕设意向问卷截至 11 月 11 日
+- 提高自信
 
 ### 后续
 
 - 看 rCore-N
+    - 带着问题去看，完整看完工作量不小
 - 跑林晨的 qemu
 
 ## 20250725
